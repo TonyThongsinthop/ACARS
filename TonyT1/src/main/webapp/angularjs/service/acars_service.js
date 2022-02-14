@@ -1,7 +1,6 @@
 'use strict';
 angular.module('tonytApp').factory('AcarsService', ['$http', '$q', '$location', '$timeout', function($http, $q, $location, $timeout) {
 
-	//'http://localhost:8080/TonyT/'
 	var REST_SERVICE_URI = $location.protocol() + "://" + $location.host() + ":" + $location.port() + getContextPath();
 
 	var factory = {};
@@ -12,7 +11,9 @@ angular.module('tonytApp').factory('AcarsService', ['$http', '$q', '$location', 
 		return COLORS[Math.floor(Math.random() * COLORS.length)];
 	}
 
-	//function to return context path e.g. /HBB
+	/*
+	 * Function to return context path
+	 */
 	function getContextPath() {
 		return window.location.pathname.substring(0, window.location.pathname
 			.indexOf("/", 2));
@@ -86,8 +87,6 @@ angular.module('tonytApp').factory('AcarsService', ['$http', '$q', '$location', 
         return deferred.promise;
     }
 
-
-	// https://stackoverflow.com/questions/29780147/how-to-return-image-from-http-get-in-angularjs
 	function _arrayBufferToBase64(buffer) {
 		var binary = '';
 		var bytes = new Uint8Array(buffer);

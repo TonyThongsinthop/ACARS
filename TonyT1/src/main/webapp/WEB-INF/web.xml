@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	id="WebApp_ID" version="4.0">
+	<display-name>CrunchifySpringMVCTutorial</display-name>
+
+	<!-- 1. This is where everything starts, setting a default page to index.jsp -->
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- 2. Instantiate the Servlet object from class DispatherServlet -->
+	<!-- Any name that is specified in servlet-name parameter, Spring MVC will 
+		look for that name + "-servlet.xml". In this example, the framework will 
+		invoke tonyt-servlet.xml -->
+
+	<servlet>
+		<servlet-name>tonyt</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- 3. Instruct servlet about what is the local URI address to look for 
+		=> http://stackoverflow.com/questions/16988689/spring-mvc-configure-url-pattern 
+		In this scenario, by specifying url-pattern to '/', servlet will pass the 
+		request as is to JAVA controller class -->
+
+	<servlet-mapping>
+		<servlet-name>tonyt</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+</web-app>

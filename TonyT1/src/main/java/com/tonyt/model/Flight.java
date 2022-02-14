@@ -5,7 +5,12 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-
+/**
+ * 
+ * @author Tony Thongsinthop
+ * Object definition of flight object which consists of 1..N ACARS message objects
+ *
+ */
 public class Flight {
 	
 	private String airlineCode;

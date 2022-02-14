@@ -5,6 +5,12 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+/**
+ * 
+ * @author Tony Thongsinthop
+ * Object definition of ACARS message object
+ *
+ */
 public class AcarsMessage {
 	
 	private UUID uuid;

@@ -18,32 +18,35 @@ import com.tonyt.model.AcarsMessage;
 import com.tonyt.model.Flight;
 import com.tonyt.service.*;
 
+/**
+ * 
+ * @author Tony Thongsinthop
+ * Main controller class that handles incoming API request from Angular JS script
+ *
+ */
 @RestController
 public class CockpitController {
 
 	@Autowired
 	private AcarsService acarsService;
 
-	@RequestMapping("/welcome")
-	public ModelAndView TestOnly() {
-
-		String message = "<br><div style='text-align:center;'>"
-				+ "<h3>Hello World</h3></div><br>";
-		return new ModelAndView("welcome", "message", acarsService.getFlight().getAirlineCode());
-	}
-
-	// ACTION: get default flight - https://springframework.guru/spring-requestmapping-annotation/
+	/*
+	 * Handle GET request and return a sample flight object consisting of 1..N ACARS message objects.
+	 */
 	@GetMapping(value = "/flight/data", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Flight> getFlightData() {
 			
 			Flight flight = acarsService.getFlight();
-			return new ResponseEntity<Flight>(flight, HttpStatus.OK); // HTTP Status Code = 200
+			return new ResponseEntity<Flight>(flight, HttpStatus.OK);
 	}
 	
+	/*
+	 * Handle POST request and publish ACARS message to KAFKA and output to file system directory.
+	 */
 	@PostMapping(value = "/flight/acars/send", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> sendAcarsMessage(@RequestBody AcarsMessage message, HttpServletRequest request) {
 			System.out.println("Receive ACARS message from client =>" + message.getUuid());
 			acarsService.sendAcarsMessage(message);
-			return new ResponseEntity<String>("SENT", HttpStatus.OK); // HTTP Status Code = 200
+			return new ResponseEntity<String>("SENT", HttpStatus.OK);
 	}
 }

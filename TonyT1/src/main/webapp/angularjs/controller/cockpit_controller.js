@@ -5,17 +5,10 @@ app.controller('CockpitController', function($scope, $location, AcarsService, ng
 	$scope.flight = {};
 
 	$scope.selectedMessage = {};
-	/* declare properties for ui grid */
-
-	/* 
-	   to enable in-line editing
-	   1) tag data attribute entry in columnDefs with "enableCellEdit: true"
-	   2) include parameter enableInlineRowEditing : true in the grid definition
-	   3) In the html <div> tag, make sure to include ui-grid-edit ui-grid-row-edit attributes
-	   https://stackoverflow.com/questions/41446677/angularjs-ui-grid-enablecelledit-not-editing
-	   https://embed.plnkr.co/6XplBZUjfJXpwNuqVw2j/
-	*/
-
+	
+	/*
+	 * Declare a property for UI-GRID
+	 */
 	$scope.acarsMessageGrid = {
 		enableFiltering: true,
 		enableRowSelection: true, //set this to allow row selection
@@ -23,8 +16,7 @@ app.controller('CockpitController', function($scope, $location, AcarsService, ng
 		enableRowHeaderSelection: false, //set this so ui-grid will display selection column
 		multiSelect: false,
 		enableSorting: true,
-		enableColumnResizing: true, //enable column resizing, refer to http://ui-grid.info/docs/#/tutorial/204_column_resizing
-		//enableCellEditOnFocus: true, //set this so you can do in line-editing			
+		enableColumnResizing: true, //enable column resizing, refer to http://ui-grid.info/docs/#/tutorial/204_column_resizing		
 		columnDefs: [
 			{ name: 'UUID', enableCellEdit: false, field: 'uuid', width: "*", type: 'string' },
 			{ name: 'MessageDirection', enableCellEdit: true, field: 'messageDirection', type: 'string', width: "150"}, 
@@ -48,8 +40,9 @@ app.controller('CockpitController', function($scope, $location, AcarsService, ng
 		]
 	};
 
-	/* functions which can be called from UI */
-
+	/*
+	 * List of functions that can be called from the front end HTML script.
+	 */
 	$scope.acarsMessageGrid.onRegisterApi = function(gridApi) {
 		$scope.gridApi = gridApi;
 		//trigger event when user select any data row on the parent grid
@@ -81,9 +74,9 @@ app.controller('CockpitController', function($scope, $location, AcarsService, ng
 		AcarsService.sendAcarsMessage(row.entity);
 	};	
 
-	/* functions to be used internally within this script */
-
-
+	/*
+	 * List of functions that are to be used internally within this script
+	 */
 	function getFlightData() {
 		AcarsService.getFlightData().then(function(response) {
 
@@ -106,7 +99,9 @@ app.controller('CockpitController', function($scope, $location, AcarsService, ng
 			row.inlineEdit.cancelEdit();
 		}
 	}
-	/* execute default method on load */
+	/*
+	 * function that will be executed on the page load.
+	 */
 	getFlightData();
 
 });
