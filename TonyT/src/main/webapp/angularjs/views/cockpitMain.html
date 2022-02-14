@@ -1,0 +1,30 @@
+<div ng-controller="CockpitController">
+
+	<md-content md-colors="{background:'green-100'}" id="content-txn-list"
+		layout-padding=""> <!--flex 50 tells the angular material to occupied 50% of screen size -->
+	<div layout-align="center">
+		<md-card md-theme-watch> <md-card-title> <md-card-title-text>
+		<span class="md-headline">Airline: {{flight.airlineCode}}</span> <span
+			class="md-subhead">Flight Number: {{flight.airlineCode}} -
+			{{flight.flightNumber}}</span> <span class="md-subhead">Flight Origin
+			Date: {{flight.originDate | date : "dd-MMM-yyyy" }}</span> <span
+			class="md-subhead">Departure: {{flight.departureAirport}}</span> <span
+			class="md-subhead">Destination: {{flight.arrivalAirport}}</span> </md-card-title-text> </md-card-title> </md-card>
+
+		<div class="row">
+			<div class="column">
+				<img ng-src="resources/images/Img_Flight_Phases_Small.png" style="width:100%"/>
+
+			</div>
+			<div class="column">
+				<img ng-src="resources/images/Img_Acars_Terminal.png" style="width:100%" />
+			</div>
+		</div>
+
+
+		<div id="grid1" class="inline-editing-grid" ui-grid="acarsMessageGrid"
+			ui-grid-selection ui-grid-selection ui-grid-edit ui-grid-row-edit
+			ui-grid-resize-columns class="grid" style="font-size: 12px"></div>
+	</md-content>
+
+</div>
