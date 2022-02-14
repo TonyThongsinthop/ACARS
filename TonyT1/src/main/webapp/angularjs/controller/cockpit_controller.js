@@ -1,5 +1,3 @@
-//instantiate controller and pass instance of HbbService
-
 app.controller('CockpitController', function($scope, $location, AcarsService, ngDialog, $mdSidenav, $mdDialog, $log, $timeout, $rootScope, Idle) {
 
 	$scope.flight = {};
