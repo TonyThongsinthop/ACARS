@@ -26,8 +26,7 @@ import com.tonyt.repository.FlightRepository;
 
 /**
  * 
- * @author Tony Thongsinthop Service class that implements acarMessage sending
- *         service.
+ * @author Tony Thongsinthop Service class that implements ACARS message sending service
  *
  */
 @Service(value = "acarsService")
