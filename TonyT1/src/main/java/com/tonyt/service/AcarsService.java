@@ -26,8 +26,8 @@ import com.tonyt.repository.FlightRepository;
 
 /**
  * 
- * @author Tony Thongsinthop
- * Service class that implements KAFKA producer.
+ * @author Tony Thongsinthop Service class that implements acarMessage sending
+ *         service.
  *
  */
 @Service(value = "acarsService")
@@ -35,6 +35,9 @@ public class AcarsService {
 
 	@Autowired
 	private FlightRepository flightRepository;
+	
+	@Autowired
+	private KafkaProducerService kafkaProducerService;
 
 	private File sourceFile;
 
@@ -45,95 +48,41 @@ public class AcarsService {
 	public void sendAcarsMessage(AcarsMessage message) {
 		try {
 			sendAcarsMessageToKafka(message);
-			sendAcarsMessageToFile(message);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException io1) {
+			io1.printStackTrace();
 		}
+		
+		sendAcarsMessageToFile(message);
 	}
 
 	public void sendAcarsMessageToKafka(AcarsMessage message) throws IOException {
 		
 		/*
-		 * 1. Convert java object into JSON string.
+		 * 1. Construct message key.
+		 */
+
+		// String messageKeyForKafka = message.getUuid().toString();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		String messageKey = message.getAirlineCode() + message.getFlightNumber() + message.getDepartureAirport()
+				+ message.getArrivalAirport() + dateFormat.format(message.getOriginDate());
+
+		/*
+		 * 2. Convert ACARS object into JSON string.
 		 */
 		ObjectMapper mapper = new ObjectMapper();
 		String messageString = null;
 		try {
 			messageString = mapper.writeValueAsString(message);
-			System.out.println("ResultingJSONstring = " + messageString);
+			System.out.println("JSONstring = " + messageString);
 		} catch (JsonProcessingException e) {
-
-		}
-
-		/*
-		 * 2. Initiate property object to be used by KAFKA producer.
-		 */
-		Properties kafkaProperties = new Properties();
-		InputStream fileStream = new FileInputStream(getResourceFile("kafka.properties"));
-
-		kafkaProperties.load(fileStream);
-
-		/*
-		 * 2.1. retrieve file name of encrypted .p12 file, obtain its absolute path and pass to variable "ssl.keystore.location".
-		 * This will allow the code to fetch the .p12 file.
-		 */
-		String keyStoreFileName = kafkaProperties.getProperty("ssl.keystore.location");
-		String keyStoreFileAbsoluatePath = getResourceFile(keyStoreFileName).getAbsolutePath();
-		kafkaProperties.setProperty("ssl.keystore.location", keyStoreFileAbsoluatePath);
-
-		/*
-		 * 2.2. retrieve file name of encrypted .jks file, obtain its absolute path and pass to variable "ssl.keystore.location".
-		 * This will allow the code to fetch the .jks file.
-		 */
-		String trustStoreFileName = kafkaProperties.getProperty("ssl.truststore.location");
-		String trustStoreFileAbsoluatePath = getResourceFile(trustStoreFileName).getAbsolutePath();
-		kafkaProperties.setProperty("ssl.truststore.location", trustStoreFileAbsoluatePath);
-
-		/*
-		 * 3. Initiate KAFKA producer.
-		 */
-		try (final Producer<String, String> producer = new KafkaProducer<>(kafkaProperties)) {
-
-			/*
-			 * 4. Construct message key.
-			 */
-
-			// String messageKeyForKafka = message.getUuid().toString();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-			String messageKeyForKafka = message.getAirlineCode() + message.getFlightNumber()
-					+ message.getDepartureAirport() + message.getArrivalAirport()
-					+ dateFormat.format(message.getOriginDate());
-
-			/*
-			 * 5. Send message to KAFKA topic then close connection.
-			 */
-			RecordMetadata metadata = producer.send(new ProducerRecord<>("acars", messageKeyForKafka, messageString))
-					.get();
-			producer.close();
-
-			/*
-			 * 6. Read KAFKA message details
-			 */
-			System.out.println("Message produced, key: " + messageKeyForKafka);
-			System.out.println("Message produced, offset: " + metadata.offset());
-			System.out.println("Message produced, partition : " + metadata.partition());
-			System.out.println("Message produced, topic: " + metadata.topic());
-
-		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
 
-	public File getResourceFile(String fileName) {
-
-		URL res = getClass().getClassLoader().getResource(fileName);
-		File file = null;
-		try {
-			file = Paths.get(res.toURI()).toFile();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		return file;
+		/*
+		 * 3. Send message to KAFKA topic then close connection.
+		 */
+		kafkaProducerService.publishToKafka(messageKey, messageString);
+		System.out.println("Publishing completed.");
 	}
 
 	public void sendAcarsMessageToFile(AcarsMessage message) {
@@ -145,7 +94,7 @@ public class AcarsService {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			mapper.writerWithDefaultPrettyPrinter().writeValue(sourceFile, message);
-			System.out.println("output file to => " + workingDirectory + "/" + fileName);
+			System.out.println("Output file to => " + workingDirectory + "/" + fileName);
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

@@ -45,7 +45,7 @@ public class CockpitController {
 	 */
 	@PostMapping(value = "/flight/acars/send", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> sendAcarsMessage(@RequestBody AcarsMessage message, HttpServletRequest request) {
-			System.out.println("Receive ACARS message from client =>" + message.getUuid());
+			System.out.println("Receive ACARS message from client with uuid =>" + message.getUuid());
 			acarsService.sendAcarsMessage(message);
 			return new ResponseEntity<String>("SENT", HttpStatus.OK);
 	}
